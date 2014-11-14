@@ -1,0 +1,322 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>五子棋</title>
+<style type="text/css">
+#qipan{
+	background-image:url("img/board1.png");
+	
+	width:480px;
+	height:480px;
+}
+
+table{
+		border:1px solid #3300FF;
+      }
+td{ 
+	width:32px;
+    height:32px;
+	border:0px;
+	font-size:0px;
+	max-width:32px;
+	max-height:32px;
+	align:center;
+    }
+body{
+	height:480px;
+	width:480px;
+}
+
+</style>
+<script src="js/jquery-1.8.0.min.js"></script>
+<script>
+	//绘制棋盘表格
+	$(function()
+	{
+		var flag=0;//红黑下棋子标志量
+		var n=5;//表示5子棋
+		var kStar=0;//五子成行时的第一个子的位置
+		var next=0;//五子中下面四子的为位置
+		var hang=15,lie=15;//棋盘的行列值
+			var a = "";
+			for(var i=1;i<=hang;i++)
+			 { 	
+			 		var b="<tr>";
+	   				for(var j=1;j<=lie;j++)
+	  				 {
+						 b=b + "<td id="+j+i*j+">0</td>";//每个格子的初始值为0
+	     
+				 	 }
+	    			 b=b + "</tr>";
+	 				 a= a + b;
+			 }
+			 $("div").html(a);
+			 
+			$("td").one("click",function(event)
+			{
+				
+			 		if(flag==0)
+					{
+						$(event.target).css("background","url(img/point_red.png)");
+						$(event.target).html("1");//下黑子时格子中写入1
+						flag=1;
+					}
+					else
+					{
+						$(event.target).css("background","url(img/point_wihte.png)");
+						$(event.target).html("2");//下白子时格子中写入2
+						flag=0;
+					}
+				 
+				
+				 
+				 var a=new Array();
+				 var tempI=0;
+				 var str="";
+				 
+				
+				for(var i=1;i<=hang;i++)
+	 			{   
+	   				for(var j=1;j<=lie;j++)
+	   				{ 
+						
+	  					a[tempI] = $("#"+j+i*j+"").text();
+	   					//a[tempI] = $("#tables").children().eq(i).children().eq(j).text();
+						
+	   					str=str+a[tempI]+" ";
+	   
+	     				
+		 				tempI++;
+				
+	    
+		 			}str=str+"\n"
+	 			}
+				
+				//alert(str);//验证棋盘数字情况
+				 
+				 /*“/”向判断*/
+			  	 for(var i=0;i<=hang-n;i++)
+         		 {
+		   			for(var j=n-1;j<lie;j++)
+					{
+						var addBlack=0,addRed=0;
+						kStar=i*lie+j;//取“/”方向的每个子的起点；
+						next=kStar;
+						for(var x=0;x<n;x++)
+              			{
+							//取起点棋子下的四个棋子
+							 var temp=parseInt(a[next]);
+							 //alert(temp);
+							 //判断黑的赢
+				 			 if(temp==1)
+							 {
+								 addBlack=addBlack+temp;
+								 if(addBlack>=n)
+				  				 {
+				   					alert("黑方赢！");
+				   					
+									return;
+				   				}
+								next=next+lie-1;//下一子的位置
+							 }
+							 //判断红的赢
+				  			if(temp==2)
+				  			{ 
+								addRed=addRed+(temp-1);
+				   				if(addRed>=n)
+				   				{
+				    				alert("白方赢！");
+				    				//onpenAlert("白方赢！");
+									return;
+				    			}
+				    			next=next+lie-1;
+				   			}
+				  
+
+               
+						}
+					}
+				 }
+   
+				 ////////////////////////////////////
+				 /*“\”向判断*/
+				for(var i=0;i<=hang-n;i++)
+				   {
+					 for(var j=0;j<=lie-n;j++)
+					 { var addBlack=0,addRed=0;
+						kStar=i*lie+j;//取“/”方向的每个子的起点；
+					    next=kStar;
+						for(var x=0;x<n;x++)
+						{
+						   //取起点棋子下的四个棋子
+							var temp=parseInt(a[next]);
+							//alert(temp);
+							
+							//alert(temp);
+						   //判断黑的赢
+						   if(temp==1)
+						   { addBlack=addBlack+temp;
+							 	if(addBlack>=n)
+								{
+							 		alert("黑方赢！");
+							 		//onpenAlert("白方赢！");
+									return;
+							 	}
+							  next=next+lie+1;//下一子的位置
+							}
+						   
+							//判断红的赢
+							if(temp==2)
+							{ 
+								addRed=addRed+(temp-1);
+							 	if(addRed>=n)
+							 	{
+							  		alert("白方赢！");
+							  		
+									return;
+							     }
+							  	next=next+lie+1;
+							 }
+							
+		  
+						 }
+					  }
+				  
+				  }
+				 
+				 ////////////////////////////////////
+				 /*“--”向判断*/
+				  for(var i=0;i<hang;i++)
+					 {
+					   for(var j=0;j<=lie-n;j++)
+					   { var addBlack=0,addRed=0;
+						  kStar=i*lie+j;//取“/”方向的每个子的起点；
+						 next=kStar;
+						  for(var x=0;x<n;x++)
+						  {
+							 //取起点棋子下的四个棋子
+							  var temp=parseInt(a[next]);
+							  //alert(temp);
+							  
+							  //alert(temp);
+							 //判断黑的赢
+							 if(temp==1)
+							 { addBlack=addBlack+temp;
+							   if(addBlack>=n)
+							  {
+							   alert("黑方赢！");
+							   
+							   return;
+							   }
+								next=next+1;//下一子的位置
+							  }
+							 
+							  //判断红的赢
+							  if(temp==2)
+							  { addRed=addRed+(temp-1);
+							   if(addRed>=n)
+							   {
+							   alert("白方赢！");
+								
+								return;
+								}
+								next=next+1;
+							   }
+							  
+			
+						   }
+						}
+					
+					}
+			/////////////////////////////////////////////////////
+			/*“|”向判断*/
+			  for(var i=0;i<=hang-n;i++)
+				 {
+				   for(var j=0;j<lie;j++)
+				   { var addBlack=0,addRed=0;
+					  kStar=i*lie+j;//取“/”方向的每个子的起点；
+					 next=kStar;
+					  for(var x=0;x<n;x++)
+					  {
+						 //取起点棋子下的四个棋子
+						  var temp=parseInt(a[next]);
+						  //alert(temp);
+						  
+						  //alert(temp);
+						 //判断黑的赢
+						 if(temp==1)
+						 { addBlack=addBlack+temp;
+						   if(addBlack>=n)
+						  {
+						  alert("黑方赢！");
+						   
+						   return;
+						   }
+							next=next+lie;//下一子的位置
+						  }
+						 
+						  //判断红的赢
+						  if(temp==2)
+						  { addRed=addRed+(temp-1);
+						   if(addRed>=n)
+						   {
+							alert("白方赢！");
+							
+							return;
+							}
+							next=next+lie;
+						   }
+						  
+		
+					   }
+					}
+				
+				}
+		////////////////////////////////
+			//和棋???????
+		   var peace=0;
+		   for(var i=0;i<hang*lie;i++)
+		   { 
+			
+				var temp=parseInt(a[i]);
+				if(temp!=0)
+				{
+				  peace=peace+1;
+				
+				 }
+				
+				 
+			 //alert(peace);
+			 
+			 }
+			
+		   
+		   
+		   
+			 if(peace==hang*lie)
+			 { 
+			  alert("和棋了！");
+			  
+			  return;
+			 }
+		   
+				 
+			});
+	});
+	
+</script>
+
+</head>
+
+<body>
+<center>
+	
+	<div id="qipan">
+	    <table border="solid" id="tables" cellpadding="0" cellspacing="0" align="center">
+ 			
+		</table>
+	</div>
+</center>
+</body>
+</html>
